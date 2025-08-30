@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'services/searxng_service.dart';
+import 'models/search_models.dart';
 
 class SearchResultsPage extends StatefulWidget {
   final String query;
@@ -11,11 +13,45 @@ class SearchResultsPage extends StatefulWidget {
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
   final TextEditingController _searchController = TextEditingController();
+  final SearXNGService _searchService = SearXNGService();
+  
+  SearchResponse? _searchResponse;
+  bool _isLoading = true;
+  String? _error;
+  String _currentCategory = 'general';
 
   @override
   void initState() {
     super.initState();
     _searchController.text = widget.query;
+    _performSearch(widget.query);
+  }
+
+  Future<void> _performSearch(String query, {String category = 'general'}) async {
+    if (query.trim().isEmpty) return;
+    
+    setState(() {
+      _isLoading = true;
+      _error = null;
+      _currentCategory = category;
+    });
+
+    try {
+      final response = await _searchService.search(
+        query: query.trim(),
+        category: category,
+      );
+      
+      setState(() {
+        _searchResponse = response;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -166,12 +202,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 ),
                 onSubmitted: (value) {
                   if (value.trim().isNotEmpty) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SearchResultsPage(query: value.trim()),
-                      ),
-                    );
+                    _performSearch(value.trim());
                   }
                 },
               ),
@@ -180,21 +211,14 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           
           const SizedBox(width: 20),
           
-          // Top nav options
+          // Category navigation
           Row(
             children: [
-              TextButton(
-                onPressed: () {},
-                child: const Text('Images', style: TextStyle(color: Colors.black54)),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('Videos', style: TextStyle(color: Colors.black54)),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('News', style: TextStyle(color: Colors.black54)),
-              ),
+              _buildCategoryButton('All', 'general'),
+              _buildCategoryButton('Images', 'images'),
+              _buildCategoryButton('Videos', 'videos'),
+              _buildCategoryButton('News', 'news'),
+              _buildCategoryButton('Maps', 'map'),
               IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.more_vert, color: Colors.black54),
@@ -207,6 +231,64 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   }
 
   Widget _buildSearchResults() {
+    if (_isLoading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(50),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text(
+                'Search Error',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _error!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.black54),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => _performSearch(_searchController.text),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_searchResponse == null || _searchResponse!.results.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(50),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.search_off, size: 64, color: Colors.grey),
+              SizedBox(height: 16),
+              Text(
+                'No results found',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -214,54 +296,80 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         children: [
           // Search stats
           Text(
-            'About 15,70,00,000 results (0.45 seconds) for "${widget.query}"',
+            'About ${_searchResponse!.number_of_results} results for "${_searchResponse!.query}"',
             style: const TextStyle(color: Colors.black54, fontSize: 14),
           ),
           
           const SizedBox(height: 20),
           
-          // Mock search results
-          ...List.generate(10, (index) => _buildSearchResult(index)),
+          // Search suggestions (if any)
+          if (_searchResponse!.suggestions != null && _searchResponse!.suggestions!.isNotEmpty)
+            _buildSuggestions(),
+          
+          // Search results
+          ..._searchResponse!.results.asMap().entries.map((entry) {
+            return _buildRealSearchResult(entry.value, entry.key);
+          }).toList(),
         ],
       ),
     );
   }
 
-  Widget _buildSearchResult(int index) {
-    final mockTitles = [
-      'What is ${widget.query}? - Complete Guide and Overview',
-      '${widget.query} - Wikipedia',
-      'Learn ${widget.query} - Best Practices and Tips',
-      '${widget.query} Tutorial for Beginners',
-      'Advanced ${widget.query} Techniques',
-      'Top 10 ${widget.query} Resources',
-      '${widget.query} Examples and Use Cases',
-      'How to master ${widget.query}',
-      '${widget.query} - Latest News and Updates',
-      'Free ${widget.query} Tools and Resources',
-    ];
+  Widget _buildCategoryButton(String label, String category) {
+    final isSelected = _currentCategory == category;
+    return Padding(
+      padding: const EdgeInsets.only(right: 15),
+      child: TextButton(
+        onPressed: () => _performSearch(_searchController.text, category: category),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.blue : Colors.black54,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ),
+    );
+  }
 
-    final mockUrls = [
-      'https://example.com/${widget.query.toLowerCase()}-guide',
-      'https://en.wikipedia.org/wiki/${widget.query}',
-      'https://learn${widget.query.toLowerCase()}.com',
-      'https://tutorial.${widget.query.toLowerCase()}.org',
-      'https://advanced${widget.query.toLowerCase()}.net',
-      'https://top10${widget.query.toLowerCase()}.com',
-      'https://examples.${widget.query.toLowerCase()}.edu',
-      'https://master${widget.query.toLowerCase()}.io',
-      'https://news.${widget.query.toLowerCase()}.com',
-      'https://free${widget.query.toLowerCase()}.tools',
-    ];
+  Widget _buildSuggestions() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Did you mean:',
+            style: TextStyle(color: Colors.black54, fontSize: 14),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 10,
+            children: _searchResponse!.suggestions!.map((suggestion) {
+              return GestureDetector(
+                onTap: () {
+                  _searchController.text = suggestion;
+                  _performSearch(suggestion);
+                },
+                child: Text(
+                  suggestion,
+                  style: const TextStyle(
+                    color: Color(0xFF1a0dab),
+                    decoration: TextDecoration.underline,
+                    fontSize: 14,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 10),
+          const Divider(),
+        ],
+      ),
+    );
+  }
 
-    final mockDescriptions = [
-      'A comprehensive guide to understanding ${widget.query}. Learn everything you need to know about ${widget.query} with detailed explanations and examples.',
-      '${widget.query} is a comprehensive topic that covers various aspects. This article provides detailed information about ${widget.query} and its applications.',
-      'Discover the best practices for ${widget.query}. Our expert tips will help you master ${widget.query} quickly and efficiently.',
-      'Start your journey with ${widget.query} using our beginner-friendly tutorial. Step-by-step instructions included.',
-      'Take your ${widget.query} skills to the next level with advanced techniques and professional strategies.',
-    ];
-
+  Widget _buildRealSearchResult(SearchResult result, int index) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       child: Column(
@@ -272,11 +380,26 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
             children: [
               Expanded(
                 child: Text(
-                  mockUrls[index],
+                  result.url,
                   style: const TextStyle(color: Colors.green, fontSize: 14),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              if (result.engine != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      result.engine!,
+                      style: const TextStyle(fontSize: 10, color: Colors.black54),
+                    ),
+                  ),
+                ),
               IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.more_vert, size: 16, color: Colors.grey),
@@ -289,16 +412,16 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           // Title
           GestureDetector(
             onTap: () {
-              // Handle result click
+              // Here you could open the URL in a browser
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Clicked: ${mockTitles[index]}'),
+                  content: Text('Opening: ${result.title}'),
                   duration: const Duration(seconds: 1),
                 ),
               );
             },
             child: Text(
-              mockTitles[index],
+              result.title,
               style: const TextStyle(
                 color: Color(0xFF1a0dab),
                 fontSize: 20,
@@ -309,11 +432,56 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           
           const SizedBox(height: 5),
           
-          // Description
-          Text(
-            mockDescriptions[index % mockDescriptions.length],
-            style: const TextStyle(color: Colors.black87, fontSize: 14, height: 1.4),
-          ),
+          // Content/Description
+          if (result.content.isNotEmpty)
+            Text(
+              result.content,
+              style: const TextStyle(color: Colors.black87, fontSize: 14, height: 1.4),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+          
+          // Additional info (published date, author)
+          if (result.publishedDate != null || result.author != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Row(
+                children: [
+                  if (result.publishedDate != null)
+                    Text(
+                      result.publishedDate!,
+                      style: const TextStyle(color: Colors.black54, fontSize: 12),
+                    ),
+                  if (result.publishedDate != null && result.author != null)
+                    const Text(' • ', style: TextStyle(color: Colors.black54, fontSize: 12)),
+                  if (result.author != null)
+                    Text(
+                      'by ${result.author}',
+                      style: const TextStyle(color: Colors.black54, fontSize: 12),
+                    ),
+                ],
+              ),
+            ),
+          
+          // Thumbnail for images/videos
+          if (result.thumbnail != null && result.thumbnail!.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              child: Image.network(
+                result.thumbnail!,
+                width: 120,
+                height: 90,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 120,
+                    height: 90,
+                    color: Colors.grey.shade200,
+                    child: const Icon(Icons.broken_image, color: Colors.grey),
+                  );
+                },
+              ),
+            ),
         ],
       ),
     );
@@ -322,6 +490,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   @override
   void dispose() {
     _searchController.dispose();
+    _searchService.dispose();
     super.dispose();
   }
 }
