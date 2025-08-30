@@ -11,20 +11,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:search_engine_app/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Golligog search app smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const GolligogApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that our Golligog logo is present.
+    expect(find.text('Golligog'), findsOneWidget);
+    
+    // Verify that search bar is present
+    expect(find.byType(TextField), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that search buttons are present
+    expect(find.text('Golligog Search'), findsOneWidget);
+    expect(find.text("I'm Feeling Lucky"), findsOneWidget);
   });
 }
