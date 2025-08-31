@@ -15,6 +15,10 @@ class SearchResult {
   final String? img_src;
   final String? publishedDate;
   final String? author;
+  final String? priority;
+  final String? category;
+  final List<dynamic>? parsed_url;
+  final List<dynamic>? positions;
   
   SearchResult({
     required this.title,
@@ -28,6 +32,10 @@ class SearchResult {
     this.img_src,
     this.publishedDate,
     this.author,
+    this.priority,
+    this.category,
+    this.parsed_url,
+    this.positions,
   });
 
   factory SearchResult.fromJson(Map<String, dynamic> json) => _$SearchResultFromJson(json);
@@ -40,10 +48,10 @@ class SearchResponse {
   final int number_of_results;
   final List<SearchResult> results;
   final List<String>? corrections;
-  final List<String>? infoboxes;
+  final List<dynamic>? infoboxes;  // Changed from List<String> to List<dynamic>
   final List<String>? suggestions;
   final List<String>? answers;
-  final String? unresponsive_engines;
+  final List<String>? unresponsive_engines;  // Changed from String to List<String>
   
   SearchResponse({
     required this.query,

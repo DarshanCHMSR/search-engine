@@ -30,6 +30,8 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   Future<void> _performSearch(String query, {String category = 'general'}) async {
     if (query.trim().isEmpty) return;
     
+    print('DEBUG: Starting search for query: "$query", category: "$category"');
+    
     setState(() {
       _isLoading = true;
       _error = null;
@@ -37,16 +39,20 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     });
 
     try {
+      print('DEBUG: Calling SearXNG API...');
       final response = await _searchService.search(
         query: query.trim(),
         category: category,
       );
       
+      print('DEBUG: Search successful! Found ${response.results.length} results');
       setState(() {
         _searchResponse = response;
         _isLoading = false;
       });
     } catch (e) {
+      print('DEBUG: Search failed with error: $e');
+      print('DEBUG: Error type: ${e.runtimeType}');
       setState(() {
         _error = e.toString();
         _isLoading = false;

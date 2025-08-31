@@ -20,6 +20,10 @@ SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(
   img_src: json['img_src'] as String?,
   publishedDate: json['publishedDate'] as String?,
   author: json['author'] as String?,
+  priority: json['priority'] as String?,
+  category: json['category'] as String?,
+  parsed_url: json['parsed_url'] as List<dynamic>?,
+  positions: json['positions'] as List<dynamic>?,
 );
 
 Map<String, dynamic> _$SearchResultToJson(SearchResult instance) =>
@@ -35,6 +39,10 @@ Map<String, dynamic> _$SearchResultToJson(SearchResult instance) =>
       'img_src': instance.img_src,
       'publishedDate': instance.publishedDate,
       'author': instance.author,
+      'priority': instance.priority,
+      'category': instance.category,
+      'parsed_url': instance.parsed_url,
+      'positions': instance.positions,
     };
 
 SearchResponse _$SearchResponseFromJson(Map<String, dynamic> json) =>
@@ -47,16 +55,16 @@ SearchResponse _$SearchResponseFromJson(Map<String, dynamic> json) =>
       corrections: (json['corrections'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      infoboxes: (json['infoboxes'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      infoboxes: json['infoboxes'] as List<dynamic>?,
       suggestions: (json['suggestions'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
       answers: (json['answers'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      unresponsive_engines: json['unresponsive_engines'] as String?,
+      unresponsive_engines: (json['unresponsive_engines'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$SearchResponseToJson(SearchResponse instance) =>
