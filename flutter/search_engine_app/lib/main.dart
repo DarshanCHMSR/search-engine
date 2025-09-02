@@ -103,7 +103,14 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(width: 15),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchResultsPage(query: 'images'),
+                ),
+              );
+            },
             child: const Text(
               'Images',
               style: TextStyle(color: Colors.black87, fontSize: 13),

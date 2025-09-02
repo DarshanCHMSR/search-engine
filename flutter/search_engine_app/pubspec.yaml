@@ -40,6 +40,9 @@ dependencies:
   
   # JSON annotation for parsing
   json_annotation: ^4.8.1
+  
+  # URL launcher for opening links
+  url_launcher: ^6.2.0
 
 dev_dependencies:
   flutter_test:
