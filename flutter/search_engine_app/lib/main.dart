@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'search_results_page.dart';
 import 'auth_wrapper.dart';
+import 'search_history_page.dart';
+import 'services/auth_service.dart';
 
 void main() {
   runApp(const GolligogApp());
@@ -33,6 +35,48 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
   bool _isHovered = false;
+  bool _isLoggedIn = false;
+  Map<String, dynamic>? _userData;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthStatus();
+  }
+
+  Future<void> _checkAuthStatus() async {
+    final isLoggedIn = await AuthService.isLoggedIn();
+    final userData = await AuthService.getUserData();
+    
+    setState(() {
+      _isLoggedIn = isLoggedIn;
+      _userData = userData;
+    });
+  }
+
+  Future<void> _logout() async {
+    try {
+      await AuthService.logoutUser();
+      setState(() {
+        _isLoggedIn = false;
+        _userData = null;
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Logged out successfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Logout failed: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,32 +162,130 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           const SizedBox(width: 15),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AuthWrapper(),
+          
+          // Show different content based on login status
+          if (_isLoggedIn) ...[
+            // History button for logged in users
+            IconButton(
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SearchHistoryPage(),
+                  ),
+                );
+                // If user selected a search from history, perform that search
+                if (result != null && result is String) {
+                  _searchController.text = result;
+                  _performSearch(result);
+                }
+              },
+              icon: const Icon(Icons.history, color: Colors.black54),
+              tooltip: 'Search History',
+            ),
+            const SizedBox(width: 10),
+            
+            // User menu
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'logout') {
+                  _logout();
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  enabled: false,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _userData?['name'] ?? 'User',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        _userData?['email'] ?? '',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF4285F4),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                const PopupMenuDivider(),
+                const PopupMenuItem(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, size: 16),
+                      SizedBox(width: 8),
+                      Text('Sign out'),
+                    ],
+                  ),
+                ),
+              ],
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.blue.shade200),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircleAvatar(
+                      radius: 12,
+                      backgroundColor: Colors.blue,
+                      child: Text(
+                        (_userData?['name'] ?? _userData?['email'] ?? 'U')[0].toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    const Icon(Icons.arrow_drop_down, size: 16),
+                  ],
+                ),
               ),
-              elevation: 1,
             ),
-            child: const Text(
-              'Sign in',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
+          ] else ...[
+            // Sign in button for non-logged in users
+            ElevatedButton(
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AuthWrapper(),
+                  ),
+                );
+                // Refresh auth status after returning from auth
+                if (result == true) {
+                  _checkAuthStatus();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4285F4),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 1,
+              ),
+              child: const Text(
+                'Sign in',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
+          ],
+          
           const SizedBox(width: 15),
           IconButton(
             onPressed: () {},
@@ -454,13 +596,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _performSearch(String query) {
+  Future<void> _performSearch(String query) async {
     if (query.trim().isNotEmpty) {
+      final trimmedQuery = query.trim();
+      
+      // Save search to history if user is logged in
+      if (_isLoggedIn) {
+        try {
+          await AuthService.saveSearchHistory(trimmedQuery);
+        } catch (e) {
+          // Don't block search if history save fails
+          print('Failed to save search history: $e');
+        }
+      }
+      
       // Navigate to search results page
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SearchResultsPage(query: query.trim()),
+          builder: (context) => SearchResultsPage(query: trimmedQuery),
         ),
       );
     } else {

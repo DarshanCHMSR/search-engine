@@ -43,6 +43,9 @@ dependencies:
   
   # URL launcher for opening links
   url_launcher: ^6.2.0
+  
+  # Shared preferences for persistent storage
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

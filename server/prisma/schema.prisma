@@ -20,6 +20,22 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  // Relationship to search history
+  searchHistory SearchHistory[]
 
   @@map("users")
+}
+
+model SearchHistory {
+  id        String   @id @default(cuid())
+  query     String
+  userId    String
+  createdAt DateTime @default(now())
+  
+  // Relationship to user
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("search_history")
+  @@index([userId, createdAt])
 }

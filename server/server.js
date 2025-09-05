@@ -211,6 +211,157 @@ app.post('/api/auth/logout', authenticateToken, (req, res) => {
     res.json({ message: 'Logout successful. Please remove the token from client-side storage.' });
 });
 
+// Search History Routes
+// Save a search query to user's history
+app.post('/api/search/history', authenticateToken, async (req, res) => {
+    try {
+        const { query } = req.body;
+        const userId = req.user.userId;
+
+        if (!query || query.trim().length === 0) {
+            return res.status(400).json({ message: 'Search query is required' });
+        }
+
+        // Check if this exact query already exists for this user (to avoid duplicates)
+        const existingQuery = await prisma.searchHistory.findFirst({
+            where: {
+                userId: userId,
+                query: query.trim()
+            }
+        });
+
+        if (existingQuery) {
+            // Update the timestamp of existing query instead of creating duplicate
+            const updatedHistory = await prisma.searchHistory.update({
+                where: { id: existingQuery.id },
+                data: { createdAt: new Date() }
+            });
+            return res.json({
+                message: 'Search query updated in history',
+                searchHistory: updatedHistory
+            });
+        }
+
+        // Create new search history entry
+        const searchHistory = await prisma.searchHistory.create({
+            data: {
+                query: query.trim(),
+                userId: userId
+            }
+        });
+
+        res.status(201).json({
+            message: 'Search query saved to history',
+            searchHistory
+        });
+
+    } catch (error) {
+        console.error('Save search history error:', error);
+        res.status(500).json({ 
+            message: 'Internal server error while saving search history',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// Get user's search history
+app.get('/api/search/history', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const limit = parseInt(req.query.limit) || 20; // Default to 20 recent searches
+        const offset = parseInt(req.query.offset) || 0;
+
+        const searchHistory = await prisma.searchHistory.findMany({
+            where: { userId: userId },
+            orderBy: { createdAt: 'desc' },
+            take: limit,
+            skip: offset,
+            select: {
+                id: true,
+                query: true,
+                createdAt: true
+            }
+        });
+
+        const totalCount = await prisma.searchHistory.count({
+            where: { userId: userId }
+        });
+
+        res.json({
+            searchHistory,
+            pagination: {
+                total: totalCount,
+                limit,
+                offset,
+                hasMore: offset + limit < totalCount
+            }
+        });
+
+    } catch (error) {
+        console.error('Get search history error:', error);
+        res.status(500).json({ 
+            message: 'Internal server error while fetching search history',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// Delete a specific search from history
+app.delete('/api/search/history/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.userId;
+
+        // Check if the search history item belongs to the authenticated user
+        const searchItem = await prisma.searchHistory.findFirst({
+            where: {
+                id: id,
+                userId: userId
+            }
+        });
+
+        if (!searchItem) {
+            return res.status(404).json({ message: 'Search history item not found' });
+        }
+
+        await prisma.searchHistory.delete({
+            where: { id: id }
+        });
+
+        res.json({ message: 'Search history item deleted successfully' });
+
+    } catch (error) {
+        console.error('Delete search history error:', error);
+        res.status(500).json({ 
+            message: 'Internal server error while deleting search history',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// Clear all search history for the user
+app.delete('/api/search/history', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+
+        const result = await prisma.searchHistory.deleteMany({
+            where: { userId: userId }
+        });
+
+        res.json({ 
+            message: 'All search history cleared successfully',
+            deletedCount: result.count
+        });
+
+    } catch (error) {
+        console.error('Clear search history error:', error);
+        res.status(500).json({ 
+            message: 'Internal server error while clearing search history',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Unhandled error:', err);
