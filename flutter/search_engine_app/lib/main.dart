@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'search_results_page.dart';
+import 'auth_wrapper.dart';
 
 void main() {
   runApp(const GolligogApp());
@@ -114,6 +115,33 @@ class _HomePageState extends State<HomePage> {
             child: const Text(
               'Images',
               style: TextStyle(color: Colors.black87, fontSize: 13),
+            ),
+          ),
+          const SizedBox(width: 15),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AuthWrapper(),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF4285F4),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 1,
+            ),
+            child: const Text(
+              'Sign in',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           const SizedBox(width: 15),
