@@ -9,7 +9,7 @@ void main() async {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Accept': 'application/json, text/plain, */*',
       },
-    );
+    ); 
     
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
