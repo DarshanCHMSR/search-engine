@@ -28,13 +28,13 @@ class _AuthWrapperState extends State<AuthWrapper> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -53,10 +53,10 @@ class _AuthWrapperState extends State<AuthWrapper> with TickerProviderStateMixin
                     borderRadius: BorderRadius.circular(60),
                     gradient: const LinearGradient(
                       colors: [
-                        Color(0xFF4285F4),
-                        Color(0xFF34A853),
-                        Color(0xFFFBBC05),
-                        Color(0xFFEA4335),
+                        Color(0xFF7B1FA2),
+                        Color(0xFF9C27B0),
+                        Color(0xFFAB47BC),
+                        Color(0xFF8E24AA),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -79,7 +79,7 @@ class _AuthWrapperState extends State<AuthWrapper> with TickerProviderStateMixin
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -87,7 +87,7 @@ class _AuthWrapperState extends State<AuthWrapper> with TickerProviderStateMixin
                   'Search the world with privacy and precision',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.black54,
+                    color: Colors.white70,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -99,17 +99,17 @@ class _AuthWrapperState extends State<AuthWrapper> with TickerProviderStateMixin
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 32),
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              color: const Color(0xFF2C2C2C),
               borderRadius: BorderRadius.circular(25),
             ),
             child: TabBar(
               controller: _tabController,
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
-                color: const Color(0xFF4285F4),
+                color: const Color(0xFF7B1FA2),
               ),
               labelColor: Colors.white,
-              unselectedLabelColor: Colors.black54,
+              unselectedLabelColor: Colors.white60,
               labelStyle: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,

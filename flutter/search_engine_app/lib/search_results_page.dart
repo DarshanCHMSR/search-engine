@@ -64,7 +64,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFF121212),
       body: Column(
         children: [
           // Header with search bar
@@ -83,10 +83,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF1E1E1E),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.shade200,
+            color: Colors.black.withOpacity(0.2),
             blurRadius: 1,
             offset: const Offset(0, 1),
           ),
@@ -107,7 +107,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.normal,
-                          color: Color(0xFF4285F4),
+                          color: Color(0xFF7B1FA2),
                         ),
                       ),
                       TextSpan(
@@ -115,7 +115,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.normal,
-                          color: Color(0xFFEA4335),
+                          color: Color(0xFF9C27B0),
                         ),
                       ),
                       TextSpan(
@@ -123,7 +123,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.normal,
-                          color: Color(0xFFFBBC05),
+                          color: Color(0xFFAB47BC),
                         ),
                       ),
                       TextSpan(
@@ -131,7 +131,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.normal,
-                          color: Color(0xFF4285F4),
+                          color: Color(0xFF7B1FA2),
                         ),
                       ),
                       TextSpan(
@@ -139,7 +139,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.normal,
-                          color: Color(0xFF34A853),
+                          color: Color(0xFF8E24AA),
                         ),
                       ),
                       TextSpan(
@@ -147,7 +147,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.normal,
-                          color: Color(0xFFEA4335),
+                          color: Color(0xFF9C27B0),
                         ),
                       ),
                       TextSpan(
@@ -155,7 +155,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.normal,
-                          color: Color(0xFFFBBC05),
+                          color: Color(0xFFAB47BC),
                         ),
                       ),
                       TextSpan(
@@ -163,7 +163,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.normal,
-                          color: Color(0xFF4285F4),
+                          color: Color(0xFF7B1FA2),
                         ),
                       ),
                     ],
@@ -178,15 +178,17 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 child: Container(
                   height: 44,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
+                    color: const Color(0xFF2C2C2C),
+                    border: Border.all(color: const Color(0xFF424242)),
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: TextField(
                     controller: _searchController,
+                    style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                      prefixIcon: const Icon(Icons.search, color: Colors.white70),
                       suffixIcon: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -200,11 +202,11 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                             ),
                           IconButton(
                             onPressed: () {},
-                            icon: const Icon(Icons.mic, color: Colors.grey),
+                            icon: const Icon(Icons.mic, color: Colors.white70),
                           ),
                           IconButton(
                             onPressed: () {},
-                            icon: const Icon(Icons.camera_alt, color: Colors.grey),
+                            icon: const Icon(Icons.camera_alt, color: Colors.white70),
                           ),
                         ],
                       ),
@@ -236,7 +238,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
               _buildCategoryButton('Scholar', 'science'),
               IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.more_vert, color: Colors.black54),
+                icon: const Icon(Icons.more_vert, color: Colors.white70),
               ),
             ],
           ),
@@ -271,7 +273,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
               const SizedBox(height: 8),
               Text(
                 _error!,
-                style: const TextStyle(color: Colors.black54),
+                style: const TextStyle(color: Colors.white70),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
@@ -301,7 +303,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
               const SizedBox(height: 8),
               Text(
                 'Try different keywords or search terms',
-                style: TextStyle(color: Colors.grey.shade500),
+                style: const TextStyle(color: Colors.white54),
               ),
             ],
           ),
@@ -355,7 +357,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.blue : Colors.black54,
+            color: isSelected ? const Color(0xFF7B1FA2) : Colors.white70,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -371,7 +373,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
         children: [
           const Text(
             'Did you mean:',
-            style: TextStyle(color: Colors.black54, fontSize: 14),
+            style: const TextStyle(color: Colors.white70, fontSize: 14),
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -385,7 +387,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 child: Text(
                   suggestion,
                   style: const TextStyle(
-                    color: Color(0xFF1a0dab),
+                    color: Color(0xFF7B1FA2),
                     decoration: TextDecoration.underline,
                     fontSize: 14,
                   ),
@@ -412,7 +414,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
               Expanded(
                 child: Text(
                   result.url,
-                  style: const TextStyle(color: Colors.green, fontSize: 14),
+                  style: const TextStyle(color: Color(0xFF4CAF50), fontSize: 14),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -433,7 +435,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 ),
               IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.more_vert, size: 16, color: Colors.grey),
+                icon: const Icon(Icons.more_vert, size: 16, color: Colors.white70),
               ),
             ],
           ),
@@ -454,7 +456,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
             child: Text(
               result.title,
               style: const TextStyle(
-                color: Color(0xFF1a0dab),
+                color: Color(0xFF7B1FA2),
                 fontSize: 20,
                 decoration: TextDecoration.underline,
               ),
@@ -467,7 +469,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           if (result.content.isNotEmpty)
             Text(
               result.content,
-              style: const TextStyle(color: Colors.black87, fontSize: 14, height: 1.4),
+              style: const TextStyle(color: Colors.white70, fontSize: 14, height: 1.4),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
@@ -584,7 +586,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
-                  color: Colors.grey.shade200,
+                  color: const Color(0xFF2C2C2C),
                 ),
                 child: (result.thumbnail != null && result.thumbnail!.isNotEmpty)
                     ? Image.network(
@@ -592,8 +594,8 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: Colors.grey.shade200,
-                            child: const Icon(Icons.broken_image, color: Colors.grey),
+                            color: const Color(0xFF2C2C2C),
+                            child: const Icon(Icons.broken_image, color: Colors.white70),
                           );
                         },
                       )
@@ -610,7 +612,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           )
                         : Container(
                             color: Colors.grey.shade200,
-                            child: const Icon(Icons.image, color: Colors.grey),
+                            child: const Icon(Icons.image, color: Colors.white70),
                           ),
               ),
             ),
@@ -621,7 +623,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 children: [
                   Text(
                     result.title,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -667,14 +669,14 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
-                              color: Colors.grey.shade200,
-                              child: const Icon(Icons.videocam, color: Colors.grey),
+                              color: const Color(0xFF2C2C2C),
+                              child: const Icon(Icons.videocam, color: Colors.white70),
                             );
                           },
                         )
                       : Container(
-                          color: Colors.grey.shade200,
-                          child: const Icon(Icons.videocam, color: Colors.grey),
+                          color: const Color(0xFF2C2C2C),
+                          child: const Icon(Icons.videocam, color: Colors.white70),
                         ),
                 ),
                 // Play button overlay
@@ -701,7 +703,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   child: Text(
                     result.title,
                     style: const TextStyle(
-                      color: Color(0xFF1a0dab),
+                      color: Color(0xFF7B1FA2),
                       fontSize: 18,
                       fontWeight: FontWeight.w400,
                     ),
@@ -714,14 +716,14 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                 
                 Text(
                   Uri.parse(result.url).host,
-                  style: const TextStyle(color: Colors.green, fontSize: 14),
+                  style: const TextStyle(color: Color(0xFF4CAF50), fontSize: 14),
                 ),
                 
                 const SizedBox(height: 8),
                 
                 Text(
                   result.content,
-                  style: const TextStyle(color: Colors.black87, fontSize: 14),
+                  style: const TextStyle(color: Colors.white70, fontSize: 14),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -731,7 +733,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       result.publishedDate!,
-                      style: const TextStyle(color: Colors.black54, fontSize: 12),
+                      style: const TextStyle(color: Colors.white70, fontSize: 12),
                     ),
                   ),
               ],
@@ -783,7 +785,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   child: Text(
                     result.title,
                     style: const TextStyle(
-                      color: Color(0xFF1a0dab),
+                      color: Color(0xFF7B1FA2),
                       fontSize: 18,
                       fontWeight: FontWeight.w400,
                     ),
@@ -867,7 +869,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   child: Text(
                     result.title,
                     style: const TextStyle(
-                      color: Color(0xFF1a0dab),
+                      color: Color(0xFF7B1FA2),
                       fontSize: 18,
                       fontWeight: FontWeight.w400,
                     ),

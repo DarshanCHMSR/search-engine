@@ -47,26 +47,69 @@ def search_with_instance(instance_url, params):
         print(f"Error with instance {instance_url}: {e}")
         return None
 
+def filter_result_sources(result_data):
+    """Remove source information from search results"""
+    if not result_data or 'results' not in result_data:
+        return result_data
+    
+    filtered_results = []
+    for result in result_data['results']:
+        # Create a clean result without engine/source information
+        clean_result = {
+            'title': result.get('title', ''),
+            'url': result.get('url', ''),
+            'content': result.get('content', ''),
+            'publishedDate': result.get('publishedDate'),
+            'thumbnail': result.get('thumbnail'),
+            'template': result.get('template', 'default')
+        }
+        # Remove None values
+        clean_result = {k: v for k, v in clean_result.items() if v is not None}
+        filtered_results.append(clean_result)
+    
+    # Update the result data
+    result_data['results'] = filtered_results
+    
+    # Remove engine information from the response
+    if 'engines' in result_data:
+        del result_data['engines']
+    if 'answers' in result_data:
+        del result_data['answers']
+    if 'infoboxes' in result_data:
+        del result_data['infoboxes']
+    
+    return result_data
+
 @app.route('/api/search', methods=['GET'])
 def search():
-    """Search endpoint that proxies to SearXNG"""
+    """Search endpoint that proxies to SearXNG with Google-only results"""
     query = request.args.get('q', '').strip()
     if not query:
         return jsonify({'error': 'Query parameter "q" is required'}), 400
     
-    # Search parameters
+    # Map category to appropriate Google engines
+    category = request.args.get('category', 'general')
+    google_engines_map = {
+        'general': 'google',
+        'images': 'google_images',
+        'news': 'google_news', 
+        'videos': 'google_videos',
+        'science': 'google_scholar',
+        'files': 'google_scholar',  # Use scholar for academic files
+        'map': 'google',  # Use regular google for map-related queries
+    }
+    
+    # Force Google engines only
+    selected_engine = google_engines_map.get(category, 'google')
+    
+    # Search parameters - force Google engines
     params = {
         'q': query,
         'format': 'json',
-        'category': request.args.get('category', 'general'),
+        'engines': selected_engine,  # Force specific Google engine
         'lang': request.args.get('lang', 'en'),
         'pageno': request.args.get('page', '1'),
     }
-    
-    # Add engines parameter if specified
-    engines = request.args.get('engines')
-    if engines:
-        params['engines'] = engines
     
     # Try local instance first
     result = search_with_instance(SEARXNG_BASE_URL, params)
@@ -79,7 +122,9 @@ def search():
                 break
     
     if result:
-        return jsonify(result)
+        # Filter out source information
+        filtered_result = filter_result_sources(result)
+        return jsonify(filtered_result)
     else:
         return jsonify({
             'error': 'All search instances are unavailable. Please try again later.',

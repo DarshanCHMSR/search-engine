@@ -170,29 +170,6 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Gmail',
-              style: TextStyle(color: Colors.white70, fontSize: 13),
-            ),
-          ),
-          const SizedBox(width: 15),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchResultsPage(query: 'images'),
-                ),
-              );
-            },
-            child: const Text(
-              'Images',
-              style: TextStyle(color: Colors.white70, fontSize: 13),
-            ),
-          ),
-          const SizedBox(width: 15),
           
           // Show different content based on login status
           if (_isLoggedIn) ...[
