@@ -206,6 +206,114 @@ app.get('/api/auth/profile', authenticateToken, async (req, res) => {
     }
 });
 
+// Update user profile
+app.put('/api/auth/profile', authenticateToken, async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        const userId = req.user.userId;
+
+        // Validation
+        if (!name || !email) {
+            return res.status(400).json({ message: 'Name and email are required' });
+        }
+
+        if (!email.includes('@')) {
+            return res.status(400).json({ message: 'Please provide a valid email address' });
+        }
+
+        // Check if email is already taken by another user
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                email: email,
+                NOT: {
+                    id: userId
+                }
+            }
+        });
+
+        if (existingUser) {
+            return res.status(409).json({ message: 'Email is already taken by another user' });
+        }
+
+        // Update user profile
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                name: name.trim(),
+                email: email.trim(),
+                updatedAt: new Date()
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        });
+
+        res.json({
+            message: 'Profile updated successfully',
+            user: updatedUser
+        });
+
+    } catch (error) {
+        console.error('Profile update error:', error);
+        res.status(500).json({ message: 'Internal server error while updating profile' });
+    }
+});
+
+// Change password
+app.put('/api/auth/change-password', authenticateToken, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user.userId;
+
+        // Validation
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'Current password and new password are required' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+        }
+
+        // Get user with current password
+        const user = await prisma.user.findUnique({
+            where: { id: userId }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Verify current password
+        const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!isValidPassword) {
+            return res.status(401).json({ message: 'Current password is incorrect' });
+        }
+
+        // Hash new password
+        const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
+        const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update password
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                password: hashedNewPassword,
+                updatedAt: new Date()
+            }
+        });
+
+        res.json({ message: 'Password changed successfully' });
+
+    } catch (error) {
+        console.error('Password change error:', error);
+        res.status(500).json({ message: 'Internal server error while changing password' });
+    }
+});
+
 // Logout endpoint (client-side token removal)
 app.post('/api/auth/logout', authenticateToken, (req, res) => {
     res.json({ message: 'Logout successful. Please remove the token from client-side storage.' });

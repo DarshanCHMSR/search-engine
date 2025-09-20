@@ -90,20 +90,24 @@ class _LoginPageState extends State<LoginPage> {
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Email',
+                labelStyle: const TextStyle(color: Colors.white70),
                 hintText: 'Enter your email address',
-                prefixIcon: const Icon(Icons.email_outlined),
+                hintStyle: const TextStyle(color: Colors.white60),
+                prefixIcon: const Icon(Icons.email_outlined, color: Colors.white70),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.white30),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
+                  borderSide: const BorderSide(color: Colors.white30),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFF4285F4), width: 2),
+                  borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                 ),
               ),
               validator: (value) {
@@ -124,14 +128,18 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passwordController,
               obscureText: !_isPasswordVisible,
               textInputAction: TextInputAction.done,
+              style: const TextStyle(color: Colors.white),
               onFieldSubmitted: (_) => _handleLogin(),
               decoration: InputDecoration(
                 labelText: 'Password',
+                labelStyle: const TextStyle(color: Colors.white70),
                 hintText: 'Enter your password',
-                prefixIcon: const Icon(Icons.lock_outlined),
+                hintStyle: const TextStyle(color: Colors.white60),
+                prefixIcon: const Icon(Icons.lock_outlined, color: Colors.white70),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.white70,
                   ),
                   onPressed: () {
                     setState(() {
@@ -141,14 +149,15 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.white30),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
+                  borderSide: const BorderSide(color: Colors.white30),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFF4285F4), width: 2),
+                  borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                 ),
               ),
               validator: (value) {
@@ -234,79 +243,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
             ),
             
-            const SizedBox(height: 24),
-            
-            // Divider
-            Row(
-              children: [
-                Expanded(child: Divider(color: Colors.grey[300])),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'OR',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                Expanded(child: Divider(color: Colors.grey[300])),
-              ],
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // Social login buttons
-            OutlinedButton.icon(
-              onPressed: () {
-                // TODO: Implement Google login
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Google login coming soon!'),
-                  ),
-                );
-              },
-              icon: Image.asset(
-                'assets/images/google_logo.png',
-                height: 20,
-                width: 20,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.g_mobiledata, color: Colors.red);
-                },
-              ),
-              label: const Text('Continue with Google'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.black87,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                side: BorderSide(color: Colors.grey[300]!),
-              ),
-            ),
-            
             const SizedBox(height: 16),
-            
-            OutlinedButton.icon(
-              onPressed: () {
-                // TODO: Implement GitHub login
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('GitHub login coming soon!'),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.code, color: Colors.black),
-              label: const Text('Continue with GitHub'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.black87,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                side: BorderSide(color: Colors.grey[300]!),
-              ),
-            ),
           ],
         ),
       ),

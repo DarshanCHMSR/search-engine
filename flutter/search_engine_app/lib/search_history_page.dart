@@ -162,10 +162,11 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         title: const Text('Search History'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: const Color(0xFF121212),
+        foregroundColor: Colors.white,
         elevation: 0,
         actions: [
           if (_searchHistory.isNotEmpty)
@@ -188,7 +189,9 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
   Widget _buildBody() {
     if (_isLoading) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: Color(0xFF7B1FA2),
+        ),
       );
     }
 
@@ -197,23 +200,23 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.error_outline,
               size: 64,
-              color: Colors.grey[400],
+              color: Colors.white54,
             ),
             const SizedBox(height: 16),
             Text(
               'Error loading search history',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Colors.grey[600],
+                color: Colors.white70,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               _error!,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[500],
+                color: Colors.white60,
               ),
               textAlign: TextAlign.center,
             ),
@@ -232,23 +235,23 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.history,
               size: 64,
-              color: Colors.grey[400],
+              color: Colors.white54,
             ),
             const SizedBox(height: 16),
             Text(
               'No search history yet',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Colors.grey[600],
+                color: Colors.white70,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Your search queries will appear here',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[500],
+                color: Colors.white60,
               ),
             ),
           ],
@@ -257,6 +260,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
     }
 
     return RefreshIndicator(
+      color: const Color(0xFF7B1FA2),
       onRefresh: _loadSearchHistory,
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
@@ -264,20 +268,24 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
         itemBuilder: (context, index) {
           final item = _searchHistory[index];
           return Card(
+            color: const Color(0xFF1E1E1E),
             margin: const EdgeInsets.only(bottom: 8),
             child: ListTile(
               leading: const Icon(
                 Icons.search,
-                color: Colors.blue,
+                color: Color(0xFF7B1FA2),
               ),
               title: Text(
                 item['query'] ?? '',
-                style: const TextStyle(fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
               ),
               subtitle: Text(
                 _formatDate(item['createdAt'] ?? ''),
-                style: TextStyle(
-                  color: Colors.grey[600],
+                style: const TextStyle(
+                  color: Colors.white60,
                   fontSize: 12,
                 ),
               ),

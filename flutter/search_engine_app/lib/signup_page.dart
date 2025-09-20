@@ -119,20 +119,24 @@ class _SignupPageState extends State<SignupPage> {
                       controller: _firstNameController,
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'First Name',
+                        labelStyle: const TextStyle(color: Colors.white70),
                         hintText: 'John',
-                        prefixIcon: const Icon(Icons.person_outlined),
+                        hintStyle: const TextStyle(color: Colors.white60),
+                        prefixIcon: const Icon(Icons.person_outlined, color: Colors.white70),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.white30),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
+                          borderSide: const BorderSide(color: Colors.white30),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF4285F4), width: 2),
+                          borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                         ),
                       ),
                       validator: (value) {
@@ -152,19 +156,23 @@ class _SignupPageState extends State<SignupPage> {
                       controller: _lastNameController,
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Last Name',
+                        labelStyle: const TextStyle(color: Colors.white70),
                         hintText: 'Doe',
+                        hintStyle: const TextStyle(color: Colors.white60),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.white30),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey[300]!),
+                          borderSide: const BorderSide(color: Colors.white30),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF4285F4), width: 2),
+                          borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                         ),
                       ),
                       validator: (value) {
@@ -187,20 +195,24 @@ class _SignupPageState extends State<SignupPage> {
               TextFormField(
                 controller: _usernameController,
                 textInputAction: TextInputAction.next,
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Username',
+                  labelStyle: const TextStyle(color: Colors.white70),
                   hintText: 'Choose a unique username',
-                  prefixIcon: const Icon(Icons.alternate_email),
+                  hintStyle: const TextStyle(color: Colors.white60),
+                  prefixIcon: const Icon(Icons.alternate_email, color: Colors.white70),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white30),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
+                    borderSide: const BorderSide(color: Colors.white30),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFF4285F4), width: 2),
+                    borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                   ),
                 ),
                 validator: (value) {
@@ -224,20 +236,24 @@ class _SignupPageState extends State<SignupPage> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Email',
+                  labelStyle: const TextStyle(color: Colors.white70),
                   hintText: 'Enter your email address',
-                  prefixIcon: const Icon(Icons.email_outlined),
+                  hintStyle: const TextStyle(color: Colors.white60),
+                  prefixIcon: const Icon(Icons.email_outlined, color: Colors.white70),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white30),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
+                    borderSide: const BorderSide(color: Colors.white30),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFF4285F4), width: 2),
+                    borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                   ),
                 ),
                 validator: (value) {
@@ -258,13 +274,17 @@ class _SignupPageState extends State<SignupPage> {
                 controller: _passwordController,
                 obscureText: !_isPasswordVisible,
                 textInputAction: TextInputAction.next,
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Password',
+                  labelStyle: const TextStyle(color: Colors.white70),
                   hintText: 'Create a strong password',
-                  prefixIcon: const Icon(Icons.lock_outlined),
+                  hintStyle: const TextStyle(color: Colors.white60),
+                  prefixIcon: const Icon(Icons.lock_outlined, color: Colors.white70),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.white70,
                     ),
                     onPressed: () {
                       setState(() {
@@ -274,14 +294,15 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white30),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
+                    borderSide: const BorderSide(color: Colors.white30),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFF4285F4), width: 2),
+                    borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                   ),
                 ),
                 validator: (value) {
@@ -305,14 +326,18 @@ class _SignupPageState extends State<SignupPage> {
                 controller: _confirmPasswordController,
                 obscureText: !_isConfirmPasswordVisible,
                 textInputAction: TextInputAction.done,
+                style: const TextStyle(color: Colors.white),
                 onFieldSubmitted: (_) => _handleSignup(),
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
+                  labelStyle: const TextStyle(color: Colors.white70),
                   hintText: 'Re-enter your password',
-                  prefixIcon: const Icon(Icons.lock_outlined),
+                  hintStyle: const TextStyle(color: Colors.white60),
+                  prefixIcon: const Icon(Icons.lock_outlined, color: Colors.white70),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _isConfirmPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.white70,
                     ),
                     onPressed: () {
                       setState(() {
@@ -322,14 +347,15 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white30),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[300]!),
+                    borderSide: const BorderSide(color: Colors.white30),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFF4285F4), width: 2),
+                    borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                   ),
                 ),
                 validator: (value) {

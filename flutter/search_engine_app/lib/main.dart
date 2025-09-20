@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'search_results_page.dart';
 import 'auth_wrapper.dart';
 import 'search_history_page.dart';
+import 'profile_page.dart';
 import 'services/auth_service.dart';
 
 void main() {
@@ -17,8 +18,43 @@ class GolligogApp extends StatelessWidget {
       title: 'Golligog',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
+        primaryColor: const Color(0xFF7B1FA2), // Deep purple
+        scaffoldBackgroundColor: const Color(0xFF121212), // Dark background
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF7B1FA2),
+          brightness: Brightness.dark,
+          background: const Color(0xFF121212),
+          surface: const Color(0xFF1E1E1E),
+          onBackground: Colors.white,
+          onSurface: Colors.white,
+        ),
+        cardColor: const Color(0xFF1E1E1E),
+        dividerColor: const Color(0xFF424242),
         fontFamily: 'Roboto',
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF121212),
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(color: Colors.white),
+          displayMedium: TextStyle(color: Colors.white),
+          displaySmall: TextStyle(color: Colors.white),
+          headlineLarge: TextStyle(color: Colors.white),
+          headlineMedium: TextStyle(color: Colors.white),
+          headlineSmall: TextStyle(color: Colors.white),
+          titleLarge: TextStyle(color: Colors.white),
+          titleMedium: TextStyle(color: Colors.white),
+          titleSmall: TextStyle(color: Colors.white),
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white),
+          bodySmall: TextStyle(color: Colors.white70),
+          labelLarge: TextStyle(color: Colors.white),
+          labelMedium: TextStyle(color: Colors.white),
+          labelSmall: TextStyle(color: Colors.white70),
+        ),
       ),
       home: const HomePage(),
     );
@@ -81,7 +117,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFF121212),
       body: SafeArea(
         child: Column(
           children: [
@@ -91,10 +127,8 @@ class _HomePageState extends State<HomePage> {
             // Main content
             Expanded(
               child: SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height - 200,
-                  ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -124,9 +158,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            
-            // Footer
-            _buildFooter(),
           ],
         ),
       ),
@@ -143,7 +174,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {},
             child: const Text(
               'Gmail',
-              style: TextStyle(color: Colors.black87, fontSize: 13),
+              style: TextStyle(color: Colors.white70, fontSize: 13),
             ),
           ),
           const SizedBox(width: 15),
@@ -158,38 +189,38 @@ class _HomePageState extends State<HomePage> {
             },
             child: const Text(
               'Images',
-              style: TextStyle(color: Colors.black87, fontSize: 13),
+              style: TextStyle(color: Colors.white70, fontSize: 13),
             ),
           ),
           const SizedBox(width: 15),
           
           // Show different content based on login status
           if (_isLoggedIn) ...[
-            // History button for logged in users
-            IconButton(
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SearchHistoryPage(),
-                  ),
-                );
-                // If user selected a search from history, perform that search
-                if (result != null && result is String) {
-                  _searchController.text = result;
-                  _performSearch(result);
-                }
-              },
-              icon: const Icon(Icons.history, color: Colors.black54),
-              tooltip: 'Search History',
-            ),
-            const SizedBox(width: 10),
-            
             // User menu
             PopupMenuButton<String>(
-              onSelected: (value) {
+              onSelected: (value) async {
                 if (value == 'logout') {
                   _logout();
+                } else if (value == 'history') {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SearchHistoryPage(),
+                    ),
+                  );
+                  if (result != null && result is String) {
+                    _searchController.text = result;
+                    _performSearch(result);
+                  }
+                } else if (value == 'profile') {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfilePage(),
+                    ),
+                  );
+                  // Refresh user data after profile changes
+                  _checkAuthStatus();
                 }
               },
               itemBuilder: (context) => [
@@ -214,10 +245,31 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const PopupMenuDivider(),
                 const PopupMenuItem(
+                  value: 'profile',
+                  child: Row(
+                    children: [
+                      Icon(Icons.person, size: 16, color: Color(0xFF7B1FA2)),
+                      SizedBox(width: 8),
+                      Text('Profile'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'history',
+                  child: Row(
+                    children: [
+                      Icon(Icons.history, size: 16, color: Color(0xFF7B1FA2)),
+                      SizedBox(width: 8),
+                      Text('Search History'),
+                    ],
+                  ),
+                ),
+                const PopupMenuDivider(),
+                const PopupMenuItem(
                   value: 'logout',
                   child: Row(
                     children: [
-                      Icon(Icons.logout, size: 16),
+                      Icon(Icons.logout, size: 16, color: Colors.red),
                       SizedBox(width: 8),
                       Text('Sign out'),
                     ],
@@ -227,16 +279,16 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.blue[50],
+                  color: const Color(0xFF7B1FA2).withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.blue.shade200),
+                  border: Border.all(color: const Color(0xFF7B1FA2).withOpacity(0.5)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     CircleAvatar(
                       radius: 12,
-                      backgroundColor: Colors.blue,
+                      backgroundColor: const Color(0xFF7B1FA2),
                       child: Text(
                         (_userData?['name'] ?? _userData?['email'] ?? 'U')[0].toUpperCase(),
                         style: const TextStyle(
@@ -268,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4285F4),
+                backgroundColor: const Color(0xFF7B1FA2), // Purple color
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 shape: RoundedRectangleBorder(
@@ -317,7 +369,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 90,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFF4285F4),
+                color: Color(0xFF7B1FA2),
                 fontFamily: 'Arial',
               ),
             ),
@@ -326,7 +378,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 90,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFFEA4335),
+                color: Color(0xFF9C27B0),
                 fontFamily: 'Arial',
               ),
             ),
@@ -335,7 +387,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 90,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFFFBBC05),
+                color: Color(0xFFAB47BC),
                 fontFamily: 'Arial',
               ),
             ),
@@ -344,7 +396,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 90,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFF4285F4),
+                color: Color(0xFF7B1FA2),
                 fontFamily: 'Arial',
               ),
             ),
@@ -353,7 +405,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 90,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFF34A853),
+                color: Color(0xFF8E24AA),
                 fontFamily: 'Arial',
               ),
             ),
@@ -362,7 +414,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 90,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFFEA4335),
+                color: Color(0xFF9C27B0),
                 fontFamily: 'Arial',
               ),
             ),
@@ -371,7 +423,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 90,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFFFBBC05),
+                color: Color(0xFFAB47BC),
                 fontFamily: 'Arial',
               ),
             ),
@@ -380,7 +432,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 90,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFF4285F4),
+                color: Color(0xFF7B1FA2),
                 fontFamily: 'Arial',
               ),
             ),
@@ -396,20 +448,20 @@ class _HomePageState extends State<HomePage> {
       height: 48,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: _isHovered ? Colors.grey.shade400 : Colors.grey.shade300, width: 1),
+        color: const Color(0xFF1E1E1E),
+        border: Border.all(color: _isHovered ? const Color(0xFF7B1FA2) : const Color(0xFF424242), width: 1),
         borderRadius: BorderRadius.circular(24),
         boxShadow: _isHovered
             ? [
                 BoxShadow(
-                  color: Colors.grey.shade400,
+                  color: const Color(0xFF7B1FA2).withOpacity(0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
               ]
             : [
                 BoxShadow(
-                  color: Colors.grey.shade200,
+                  color: Colors.black.withOpacity(0.2),
                   blurRadius: 2,
                   offset: const Offset(0, 1),
                 ),
@@ -425,7 +477,7 @@ class _HomePageState extends State<HomePage> {
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             hintText: 'Search Golligog or type a URL',
-            hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+            hintStyle: const TextStyle(color: Colors.grey, fontSize: 16),
             prefixIcon: const Padding(
               padding: EdgeInsets.only(left: 8, right: 8),
               child: Icon(Icons.search, color: Colors.grey, size: 20),
@@ -447,7 +499,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     _performSearch(_searchController.text);
                   },
-                  icon: const Icon(Icons.search, color: Colors.blue, size: 20),
+                  icon: const Icon(Icons.search, color: Color(0xFF7B1FA2), size: 20),
                   tooltip: 'Search',
                 ),
                 IconButton(
@@ -493,9 +545,9 @@ class _HomePageState extends State<HomePage> {
       height: 36,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: const Color(0xFF2C2C2C),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
+        border: Border.all(color: const Color(0xFF424242), width: 1),
       ),
       child: Material(
         color: Colors.transparent,
@@ -513,7 +565,7 @@ class _HomePageState extends State<HomePage> {
             child: Text(
               text,
               style: const TextStyle(
-                color: Color(0xFF3c4043),
+                color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
               ),
@@ -531,7 +583,7 @@ class _HomePageState extends State<HomePage> {
         'Golligog offered in: हिन्दी বাংলা తెలుగు मराठी தமிழ் ગુજરાતી ಕನ್ನಡ മലയാളം ਪੰਜਾਬੀ',
         textAlign: TextAlign.center,
         style: const TextStyle(
-          color: Color(0xFF1a0dab),
+          color: Color(0xFF7B1FA2),
           fontSize: 13,
           decoration: TextDecoration.underline,
         ),
@@ -539,62 +591,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildFooter() {
-    return Container(
-      color: Colors.grey.shade100,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(15),
-            child: const Text(
-              'India',
-              style: TextStyle(color: Colors.black54, fontSize: 15),
-            ),
-          ),
-          const Divider(height: 1, color: Colors.grey),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    _buildFooterLink('About'),
-                    _buildFooterLink('Advertising'),
-                    _buildFooterLink('Business'),
-                    _buildFooterLink('How Search works'),
-                  ],
-                ),
-                Row(
-                  children: [
-                    _buildFooterLink('Privacy'),
-                    _buildFooterLink('Terms'),
-                    _buildFooterLink('Settings'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildFooterLink(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: TextButton(
-        onPressed: () {},
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.black54,
-            fontSize: 14,
-          ),
-        ),
-      ),
-    );
-  }
 
   Future<void> _performSearch(String query) async {
     if (query.trim().isNotEmpty) {
