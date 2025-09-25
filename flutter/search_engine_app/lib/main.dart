@@ -142,17 +142,9 @@ class _HomePageState extends State<HomePage> {
                       // Search bar
                       _buildSearchBar(),
                       
-                      const SizedBox(height: 30),
-                      
-                      // Search buttons
-                      _buildSearchButtons(),
-                      
-                      const SizedBox(height: 30),
-                      
-                      // Language options
-                      _buildLanguageOptions(),
-                      
                       const SizedBox(height: 50),
+                      
+                      // ...existing code...
                     ],
                   ),
                 ),
@@ -315,20 +307,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
           
-          const SizedBox(width: 15),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.apps, color: Colors.black54),
-          ),
-          const SizedBox(width: 15),
-          CircleAvatar(
-            radius: 16,
-            backgroundColor: Colors.blue.shade600,
-            child: const Text(
-              'G',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ),
+          // ...existing code...
         ],
       ),
     );
@@ -449,7 +428,7 @@ class _HomePageState extends State<HomePage> {
         onExit: (_) => setState(() => _isHovered = false),
         child: TextField(
           controller: _searchController,
-          style: const TextStyle(fontSize: 16, color: Colors.black87),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
           decoration: InputDecoration(
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -481,12 +460,12 @@ class _HomePageState extends State<HomePage> {
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.mic, color: Colors.grey, size: 20),
+                  icon: const Icon(Icons.keyboard_voice, color: Colors.grey, size: 20),
                   tooltip: 'Voice search',
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.camera_alt, color: Colors.grey, size: 20),
+                  icon: const Icon(Icons.photo_camera, color: Colors.grey, size: 20),
                   tooltip: 'Search by image',
                 ),
               ],
@@ -503,55 +482,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildSearchButtons() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildButton('Golligog Search'),
-          const SizedBox(width: 15),
-          _buildButton("I'm Feeling Lucky"),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildButton(String text) {
-    return Container(
-      height: 36,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-      decoration: BoxDecoration(
-        color: const Color(0xFF2C2C2C),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: const Color(0xFF424242), width: 1),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(4),
-          onTap: () {
-            if (text == 'Golligog Search') {
-              _performSearch(_searchController.text);
-            } else {
-              // I'm Feeling Lucky functionality
-              _performLuckySearch();
-            }
-          },
-          child: Center(
-            child: Text(
-              text,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildLanguageOptions() {
     return Padding(

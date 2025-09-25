@@ -215,15 +215,32 @@ class _ProfilePageState extends State<ProfilePage> {
                     Center(
                       child: Column(
                         children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor: const Color(0xFF7B1FA2),
-                            child: Text(
-                              (_userData?['name'] ?? _userData?['email'] ?? 'U')[0].toUpperCase(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [Color(0xFF7B1FA2), Color(0xFFAB47BC)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF7B1FA2).withOpacity(0.3),
+                                  blurRadius: 12,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.transparent,
+                              child: Text(
+                                (_userData?['name'] ?? _userData?['email'] ?? 'U')[0].toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -231,42 +248,65 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             _userData?['name'] ?? 'User',
                             style: const TextStyle(
-                              fontSize: 24,
+                              fontSize: 26,
                               fontWeight: FontWeight.bold,
+                              color: Color(0xFF7B1FA2),
+                              letterSpacing: 1.2,
                             ),
                           ),
                           Text(
-                            'Member since ${_formatDate(_userData?['createdAt'])}',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 14,
+                            _userData?['email'] ?? '',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF2C2C2C),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'Member since ${_formatDate(_userData?['createdAt'])}',
+                              style: TextStyle(
+                                color: Colors.grey[400],
+                                fontSize: 13,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    
                     const SizedBox(height: 32),
-                    
                     // Profile Information
                     Card(
-                      elevation: 2,
+                      elevation: 4,
                       color: const Color(0xFF1E1E1E),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(24.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Profile Information',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                            Row(
+                              children: [
+                                const Icon(Icons.person, color: Color(0xFF7B1FA2)),
+                                const SizedBox(width: 8),
+                                const Text(
+                                  'Profile Information',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 20),
-                            
                             // Name Field
                             TextFormField(
                               controller: _nameController,
@@ -277,15 +317,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                 labelStyle: const TextStyle(color: Colors.white70),
                                 prefixIcon: const Icon(Icons.person, color: Colors.white70),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: const BorderSide(color: Colors.white30),
                                 ),
                                 enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: const BorderSide(color: Colors.white30),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                                 ),
                                 filled: !_isEditing,
@@ -298,9 +338,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 return null;
                               },
                             ),
-                            
                             const SizedBox(height: 16),
-                            
                             // Email Field
                             TextFormField(
                               controller: _emailController,
@@ -311,15 +349,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                 labelStyle: const TextStyle(color: Colors.white70),
                                 prefixIcon: const Icon(Icons.email, color: Colors.white70),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: const BorderSide(color: Colors.white30),
                                 ),
                                 enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: const BorderSide(color: Colors.white30),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                                 ),
                                 filled: !_isEditing,
@@ -335,7 +373,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                 return null;
                               },
                             ),
-                            
                             if (_isEditing) ...[
                               const SizedBox(height: 20),
                               Row(
@@ -345,6 +382,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF7B1FA2),
                                       foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
                                     ),
                                     child: const Text('Save Changes'),
                                   ),
@@ -367,28 +407,35 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    
                     const SizedBox(height: 24),
-                    
                     // Password Section
                     Card(
-                      elevation: 2,
+                      elevation: 4,
                       color: const Color(0xFF1E1E1E),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(24.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  'Security',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.lock, color: Color(0xFF7B1FA2)),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      'Security',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 if (!_showPasswordSection)
                                   TextButton.icon(
@@ -405,10 +452,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                               ],
                             ),
-                            
                             if (_showPasswordSection) ...[
                               const SizedBox(height: 20),
-                              
                               // Current Password
                               TextFormField(
                                 controller: _currentPasswordController,
@@ -419,22 +464,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                   labelStyle: const TextStyle(color: Colors.white70),
                                   prefixIcon: const Icon(Icons.lock, color: Colors.white70),
                                   border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(color: Colors.white30),
                                   ),
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(color: Colors.white30),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                                   ),
                                 ),
                               ),
-                              
                               const SizedBox(height: 16),
-                              
                               // New Password
                               TextFormField(
                                 controller: _newPasswordController,
@@ -445,22 +488,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                   labelStyle: const TextStyle(color: Colors.white70),
                                   prefixIcon: const Icon(Icons.lock_outline, color: Colors.white70),
                                   border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(color: Colors.white30),
                                   ),
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(color: Colors.white30),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                                   ),
                                 ),
                               ),
-                              
                               const SizedBox(height: 16),
-                              
                               // Confirm Password
                               TextFormField(
                                 controller: _confirmPasswordController,
@@ -471,22 +512,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                   labelStyle: const TextStyle(color: Colors.white70),
                                   prefixIcon: const Icon(Icons.lock_outline, color: Colors.white70),
                                   border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(color: Colors.white30),
                                   ),
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(color: Colors.white30),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(12),
                                     borderSide: const BorderSide(color: Color(0xFF7B1FA2), width: 2),
                                   ),
                                 ),
                               ),
-                              
                               const SizedBox(height: 20),
-                              
                               Row(
                                 children: [
                                   ElevatedButton(
@@ -494,6 +533,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF7B1FA2),
                                       foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
                                     ),
                                     child: const Text('Update Password'),
                                   ),
