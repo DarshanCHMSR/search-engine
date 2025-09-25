@@ -533,22 +533,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _performLuckySearch() {
-    // I'm Feeling Lucky functionality - search with random term or first suggestion
-    String query = _searchController.text.trim();
-    if (query.isEmpty) {
-      // If no search term, use a random popular search
-      final luckySearches = ['Flutter', 'Programming', 'Technology', 'AI', 'Science'];
-      query = (luckySearches..shuffle()).first;
-    }
-    
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchResultsPage(query: query),
-      ),
-    );
-  }
+
 
   @override
   void dispose() {
