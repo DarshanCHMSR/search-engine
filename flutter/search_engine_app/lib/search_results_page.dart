@@ -418,21 +418,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (result.engine != null)
-                Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      result.engine!,
-                      style: const TextStyle(fontSize: 10, color: Colors.black54),
-                    ),
-                  ),
-                ),
               IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.more_vert, size: 16, color: Colors.white70),
